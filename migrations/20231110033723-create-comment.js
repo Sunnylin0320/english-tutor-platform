@@ -1,17 +1,20 @@
 'use strict'
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('comments', {
+    return queryInterface.createTable('Comments', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      studentId: {
+      TutorId: {
         type: Sequelize.INTEGER
       },
-      courseId: {
+      StudentId: {
+        type: Sequelize.INTEGER
+      },
+      BookingId: {
         type: Sequelize.INTEGER
       },
       content: {
@@ -28,6 +31,6 @@ module.exports = {
     })
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('comments')
+    return queryInterface.dropTable('Comments')
   }
 }

@@ -3,16 +3,22 @@ const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class Comment extends Model {
     static associate (models) {
-      // 定義 Comment 和 Course 之間的多對一關聯
-      Comment.belongsTo(models.Course, { foreignKey: 'courseId' })
-      // 定義 Comment 和 User 之間的多對一關聯，表示評論是哪位學生發表的
-      Comment.belongsTo(models.User, { foreignKey: 'studentId' })
+      Comment.belongsTo(models.User, {
+        foreignKey: 'TutorId',
+        as: 'TutorComments'
+      })
+      Comment.belongsTo(models.User, {
+        foreignKey: 'StudentId',
+        as: 'StudentComments'
+      })
+      Comment.belongsTo(models.Booking, { foreignKey: 'BookingId' })
     }
   }
   Comment.init(
     {
-      studentId: DataTypes.INTEGER,
-      courseId: DataTypes.INTEGER,
+      TutorId: DataTypes.INTEGER,
+      StudentId: DataTypes.INTEGER,
+      BookingId: DataTypes.INTEGER,
       content: DataTypes.TEXT
     },
     {
