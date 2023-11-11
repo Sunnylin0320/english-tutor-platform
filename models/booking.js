@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate (models) {
       Booking.belongsTo(models.Course, { foreignKey: 'CourseId' })
       Booking.belongsTo(models.User, { foreignKey: 'StudentId' })
-      Booking.hasOne(models.Evaluation, { foreignKey: 'BookingId' })
+      Booking.hasOne(models.Comment, { foreignKey: 'BookingId' })
     }
   }
   Booking.init(
