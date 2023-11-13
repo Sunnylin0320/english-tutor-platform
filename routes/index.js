@@ -7,6 +7,7 @@ const tutors = require('./modules/tutors')
 const adminController = require('../controllers/admin-controller')
 const userController = require('../controllers/user-controller')
 
+const { authenticated } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 
 // user 註冊登入登出7支
@@ -18,10 +19,9 @@ router.get('/signout', userController.signOut)
 // admin 1支
 router.get('/admin/users', adminController.getUsers)
 
-router.use('/students', students)
-router.use('/tutors', tutors)
+router.use('/students', authenticated, students) // students相關10支路由
+router.use('/tutorts', authenticated, tutors) // tutors相關3支路由
 
-router.use('/', (req, res) => res.redirect('/students/courses'))
 router.use('/', generalErrorHandler)
 
 module.exports = router
