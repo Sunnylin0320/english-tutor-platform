@@ -12,10 +12,7 @@
     <tr>
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
-      <td>{{this.email}}</td>
-      {{#ifCond this.role 'admin'}} <td>Admin</td>{{/ifCond}}
-      {{#ifCond this.role 'student'}} <td>Student</td>{{/ifCond}}
-      {{#ifCond this.role 'tutor'}} <td>Tutor</td>{{/ifCond}}
+      <td>{{this.email}}</td> 
     </tr>
     {{/each}}
   </tbody>

@@ -7,6 +7,7 @@ const exphbs = require('express-handlebars')
 const flash = require('connect-flash')
 const session = require('express-session')
 const passport = require('./config/passport')
+const handlebarsHelpers = require('handlebars-helpers')()
 
 const dayjsHelpers = require('./helpers/dayjs-helpers')
 const { getUser } = require('./helpers/auth-helpers')
@@ -15,7 +16,14 @@ const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
 
-app.engine('hbs', exphbs({ extname: '.hbs', helpers: dayjsHelpers }))
+const hbs = exphbs({
+  extname: '.hbs',
+  helpers: {
+    ...handlebarsHelpers,
+    ...dayjsHelpers
+  }
+})
+app.engine('hbs', hbs)
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 app.use(

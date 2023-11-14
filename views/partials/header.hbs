@@ -7,6 +7,14 @@
           aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
+        {{#if (eq user.role 'student')}}
+      <a href="/students/{{user.id}}">
+        <span class="text-white nav-link">{{ user.name }}</span>
+      </a>
+      <a href="/students/{{user.id}}/apply">
+        <span class="text-white nav-link">成為老師</span>
+      </a>
+      {{/if}}
         <div class="collapse navbar-collapse" id="navbarCollapse">
           <ul class="navbar-nav ms-auto mb-2 mb-md-0">
             {{#if user.isAdmin}}

@@ -1,4 +1,4 @@
-const { Course } = require('../models')
+const { User, Course } = require('../models')
 
 const studentController = {
   getCourses: (req, res, next) => {
@@ -18,6 +18,20 @@ const studentController = {
         res.render('students/course', { course })
       })
       .catch(err => next(err))
+  },
+  getStudent: async (req, res, next) => {
+    try {
+      const id = req.params.id
+      const student = await User.findByPk(id, { raw: true })
+
+      if (!student) {
+        throw new Error("User doesn't exist.")
+      }
+
+      res.render('students/profile', { student })
+    } catch (err) {
+      next(err)
+    }
   }
 }
 
