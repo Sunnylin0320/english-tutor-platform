@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
+const { getUser } = require('../helpers/auth-helpers')
 const db = require('../models')
 const { User } = db
 const userController = {
@@ -34,7 +35,18 @@ const userController = {
   },
   signIn: (req, res) => {
     req.flash('success_messages', '成功登入！')
-    res.redirect('/students/courses')
+
+    // 獲取用戶的角色
+    const userRole = getUser(req).role
+
+    // 根據用戶的角色重定向到不同的頁面
+    if (userRole === 'student' || userRole === 'tutor') {
+      res.redirect('/students/courses')
+    } else if (userRole === 'admin') {
+      res.redirect('/admin/users')
+    } else {
+      res.redirect('/signin')
+    }
   },
   signOut: (req, res) => {
     req.flash('success_messages', '登出成功！')
