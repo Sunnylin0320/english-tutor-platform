@@ -1,6 +1,12 @@
+const { User } = require('../models')
+
 const adminController = {
-  getUsers: (req, res) => {
-    return res.render('admin/users')
+  getUsers: (req, res, next) => {
+    User.findAll({
+      raw: true
+    })
+      .then(users => res.render('admin/users', { users }))
+      .catch(err => next(err))
   }
 }
 

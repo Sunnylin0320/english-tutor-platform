@@ -17,7 +17,7 @@ router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 router.get('/signout', userController.signOut)
 // admin 1支
-router.get('/admin/users', adminController.getUsers)
+router.get('/admin/users', authenticated, adminController.getUsers) // admin 查看所有使用者
 
 router.use('/students', authenticated, students) // students相關10支路由
 router.use('/tutorts', authenticated, tutors) // tutors相關3支路由
