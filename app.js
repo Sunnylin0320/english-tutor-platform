@@ -31,9 +31,8 @@ app.use((req, res, next) => {
   next()
 })
 app.use(routes)
-// 設定 port 3000
 app.listen(3000, () => {
-  console.log(`App is running on http://localhost:${port}/`)
+  console.log(`App is running on http://localhost:${port}`)
 })
 
 module.exports = app
