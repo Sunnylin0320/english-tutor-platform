@@ -1,21 +1,14 @@
 <div class="row">
-  <div class="col-md-12">
-    <h1>{{course.name}}</h1>
-  </div>
-
   <div class="col-md-4">
-    <div class="well">
-      <ul class="list-unstyled">
-        <li><strong>Opening Hour:</strong> {{restaurant.openingHours}}</li>
-        <li><strong>Tel:</strong> {{restaurant.tel}}</li>
-        <li><strong>Address:</strong> {{restaurant.address}}</li>
-      </ul>
-    </div>
+    <img class="img-responsive center-block"
+      src="{{course.User.avatar}}"
+      style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
   </div>
   <div class="col-md-8">
-    <p style="white-space: break-spaces;">{{restaurant.description}}</p>
+    <h1>Name : {{course.User.name}}</h1>
+    <h3>Country : {{course.User.nation}}</h3>
+    <h3>課程名稱 : {{course.name}}</h3>
   </div>
-  <hr>
-</div>
-
+ 
 <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
+<script src="/javascripts/booking.js"></script>

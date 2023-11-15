@@ -2,20 +2,31 @@ const { User, Course } = require('../models')
 
 const studentController = {
   getCourses: (req, res, next) => {
-    Course.findAll({
+    return Course.findAll({
+      include: User,
+      nest: true,
       raw: true
+    }).then(courses => {
+      const data = courses.map(r => ({
+        ...r
+      }))
+      return res.render('students/courses', {
+        courses: data
+      })
     })
-      .then(courses => res.render('students/courses', { courses }))
-      .catch(err => next(err))
   },
   getCourse: (req, res, next) => {
-    Course.findByPk(req.params.id, {
+    return Course.findByPk(req.params.id, {
+      include: User,
+      nest: true,
       raw: true
     })
       .then(course => {
         if (!course) throw new Error("Course didn't exist!")
 
-        res.render('students/course', { course })
+        res.render('students/course', {
+          course
+        })
       })
       .catch(err => next(err))
   },

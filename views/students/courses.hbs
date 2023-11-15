@@ -1,19 +1,21 @@
 <div class="row mt-3">
   {{#each courses}}
-    <div class="col-md-4">
-      <div class="card mb-4 shadow-sm">
-        <a href="/students/courses/{{this.id}}">
-          <img class="card-img-top img-fluid" src="{{this.avatar}}" alt="Card image cap" width="286px" height="180px"
-            style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-        </a>
-        <div class="card-body">
-          <p class="card-text">
-            <a href="/students/courses/{{this.id}}">
-              {{this.name}}
-            </a>
-          </p>
+    <div class="col-4" style="margin:0px;">
+          <div class="card mb-3" style="margin:0px;height:200px">
+            <div class="d-flex mt-3 mx-2">
+              <img class="card-img-top rounded-circle" src="{{this.User.avatar}}"
+                style="background-color:gray; width:70px;height:70px">
+              <div class="d-flex flex-column mt-3 mx-3" style="text-align:start">
+                <a href="/students/courses/{{this.id}}" style="text-decoration:none;color:black">
+                  <h5 class="card-title mb-1">{{this.User.name}}</h5>
+                </a>
+                <p>{{this.User.nation}}</p>
+              </div>
+            </div>
+            <div class="card-body" style="height:30%;text-align:start">
+              <h6 style="font-size:1.1rem;">{{this.name}}</h6>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  {{/each}}
-</div> 
+        {{/each}}
+        </div> 
