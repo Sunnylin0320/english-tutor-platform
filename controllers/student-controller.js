@@ -76,6 +76,9 @@ const studentController = {
         res.redirect('edit')
       })
       .catch(err => next(err))
+  },
+  getApplyTutor: (req, res, next) => {
+    res.render('students/apply')
   }
 }
 
