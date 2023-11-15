@@ -1,13 +1,13 @@
 <div class="row">
   <div class="col-md-4">
-    <img class="img-responsive center-block" src="{{student.avatar}}"
+    <img class="img-responsive center-block" src="{{tutor.avatar}}"
       style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-      <h2>Name : {{student.name}}</h1>
-      <h2>Country : {{student.nation}}</h2>
+      <h2>Name : {{tutor.name}}</h1>
+      <h2>Country : {{tutor.nation}}</h2>
       <h2>About me:</h3>
-      <p>{{student.introduction}}</p>
+      <p>{{tutor.introduction}}</p>
   </div>
   <div class="mt-4 row d-flex">
-        <a href="/students/{{user.id}}/edit" class="btn btn-info btn-block" style="width:200px">Edit</a>
+        <a href="/tutors/{{user.id}}/edit" class="btn btn-info btn-block" style="width:200px">Edit</a>
       </div>
 <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>

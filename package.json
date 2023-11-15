@@ -24,6 +24,7 @@
     "handlebars-helpers": "^0.10.0",
     "imgur": "^1.0.2",
     "method-override": "^3.0.0",
+    "multer": "^1.4.3",
     "mysql2": "^2.1.0",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",

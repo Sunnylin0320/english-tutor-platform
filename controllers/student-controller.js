@@ -1,4 +1,5 @@
 const { User, Course } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const studentController = {
   getCourses: (req, res, next) => {
@@ -43,6 +44,38 @@ const studentController = {
     } catch (err) {
       next(err)
     }
+  },
+  getStudentEdit: async (req, res, next) => {
+    try {
+      const id = req.params.id
+      const student = await User.findByPk(id)
+      if (!student) throw new Error("User doesn't exist.")
+
+      res.render('students/edit', { student })
+    } catch (err) {
+      next(err)
+    }
+  },
+  putStudentEdit: (req, res, next) => {
+    const { name, nation, introduction } = req.body
+    if (req.params.id !== req.user.id.toString()) {
+      return res.redirect(`students/${req.user.id}`)
+    }
+    const { file } = req
+    Promise.all([User.findByPk(req.params.id), imgurFileHandler(file)])
+      .then(([user, filepath]) => {
+        return user.update({
+          name,
+          nation,
+          introduction,
+          avatar: filepath || user.avatar
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', 'Profile was successfully to update')
+        res.redirect('edit')
+      })
+      .catch(err => next(err))
   }
 }
 
