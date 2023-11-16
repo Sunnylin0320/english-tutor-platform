@@ -1,4 +1,3 @@
-const { Op } = require('sequelize')
 const Sequelize = require('sequelize')
 const { User, Course, Booking } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
@@ -14,7 +13,7 @@ const tutorController = {
       }
       const tutorCourses = await Course.findAll({
         where: {
-          TutorId: tutor.id 
+          TutorId: tutor.id
         },
         raw: true
       })
