@@ -1,4 +1,6 @@
-const { User } = require('../models')
+const { Op } = require('sequelize')
+const Sequelize = require('sequelize')
+const { User, Course, Booking } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const tutorController = {
@@ -10,8 +12,29 @@ const tutorController = {
       if (!tutor) {
         throw new Error("User doesn't exist.")
       }
-
-      res.render('tutors/profile', { tutor })
+      const tutorCourses = await Course.findAll({
+        where: {
+          TutorId: tutor.id 
+        },
+        raw: true
+      })
+      const newBookings = await Booking.findAll({
+        where: {
+          CourseId: tutorCourses.map(course => course.id),
+          createdAt: { [Sequelize.Op.gt]: new Date('2023-11-01') }
+        },
+        include: [
+          {
+            model: Course,
+            attributes: ['name', 'link'],
+            include: [{ model: User }]
+          }
+        ],
+        nest: true,
+        raw: true
+      })
+      console.log('New bookings:', newBookings)
+      res.render('tutors/profile', { tutor, newBookings })
     } catch (err) {
       next(err)
     }

@@ -7,7 +7,19 @@
       <h2>About me:</h3>
       <p>{{tutor.introduction}}</p>
   </div>
-  <div class="mt-4 row d-flex">
-        <a href="/tutors/{{user.id}}/edit" class="btn btn-info btn-block" style="width:200px">Edit</a>
-      </div>
+   <div class="col-md-8">
+    <h3>New Schedule</h3>
+    {{#each newBookings}}
+    <div class="list-group-item">
+      <ul>
+        <li><strong>Time</strong> : {{this.createdAt}}</li>
+        <li><strong>Tutor's Name</strong> : {{this.Course.User.name}}</li>
+        <li><strong>Session Link</strong> : <a href="{{this.Course.link}}">{{this.Course.link}}</a></li>
+      </ul>
+    </div>
+    {{/each}}
+  </div>
+</div>
+  
+   <a href="/tutors/{{user.id}}/edit" class="btn btn-info btn-block" style="width:200px">Edit</a>
 <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
