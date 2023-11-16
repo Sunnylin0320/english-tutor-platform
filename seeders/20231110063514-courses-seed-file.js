@@ -15,7 +15,7 @@ module.exports = {
     const pastFrom = '2023-01-01'
     const pastTo = '2023-10-31'
     const newFrom = '2023-11-20'
-    const newTo = '2023-12-31'
+    const newTo = '2023-12-03'
     const courseCount = 5 // 要生成的每個類別的課程數量
 
     for (const tutor of tutors) {
@@ -32,7 +32,7 @@ module.exports = {
           startTime,
           endTime,
           spendTime: '30 minutes',
-          bookingDay: new Date(faker.date.between({ from: start, to: end })),
+          bookingDay: new Date(faker.date.between({ from: startTime, to: endTime })),
           link: faker.internet.url(),
           createdAt: new Date(),
           updatedAt: new Date()
