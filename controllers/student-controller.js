@@ -1,4 +1,5 @@
 const { Op } = require('sequelize')
+const Sequelize = require('sequelize')
 const { User, Course, Booking } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
@@ -43,14 +44,16 @@ const studentController = {
       const newBookings = await Booking.findAll({
         where: {
           StudentId: id,
-          createdAt: { [Op.gte]: new Date() }
+          createdAt: { [Sequelize.Op.gt]: new Date('2023-11-01') }
         },
         include: [
           {
             model: Course,
-            include: [{ model: User, as: 'User' }]
+            include: [{ model: User }]
           }
-        ]
+        ],
+        nest: true,
+        raw: true
       })
       const lessonHistory = await Booking.findAll({
         where: {
@@ -60,9 +63,12 @@ const studentController = {
         include: [
           {
             model: Course,
-            include: [{ model: User, as: 'User' }]
+            attributes: ['name', 'link'],
+            include: [{ model: User }]
           }
-        ]
+        ],
+        nest: true,
+        raw: true
       })
       res.render('students/profile', { student, newBookings, lessonHistory })
     } catch (err) {

@@ -45,7 +45,7 @@ module.exports = {
         const bookingData = {
           StudentId: student.id,
           CourseId: futureCourses[i].id,
-          period: '30 minutes',
+          period: '60 minutes',
           createdAt: new Date(),
           updatedAt: new Date()
         }
