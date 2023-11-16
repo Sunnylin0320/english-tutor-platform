@@ -79,6 +79,33 @@ const studentController = {
   },
   getApplyTutor: (req, res, next) => {
     res.render('students/apply')
+  },
+  postApplyTutor: (req, res, next) => {
+    if (!req.body.name || !req.body.link) {
+      throw new Error('除了課程介紹外，其餘欄位皆為必填！')
+    }
+    Promise.all([
+      Course.findOne({ where: { tutorId: req.user.id } }),
+      User.findByPk(req.user.id)
+    ])
+      .then(([course, user]) => {
+        if (course) {
+          throw new Error('你已是老師了!')
+        }
+        return Course.create({
+          tutorId: req.user.id,
+          name: req.body.name,
+          introduction: req.body.introduction,
+          link: req.body.link
+        }).then(() => {
+          return user.update({ role: 'tutor' })
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', '已成功成為老師!')
+        res.redirect('/')
+      })
+      .catch(err => next(err))
   }
 }
 

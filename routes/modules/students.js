@@ -8,6 +8,7 @@ const studentController = require('../../controllers/student-controller')
 router.get('/courses', studentController.getCourses) // Student查看所有Courses
 router.get('/courses/:id', studentController.getCourse) // Student查看單筆Course
 router.get('/:id/apply', studentController.getApplyTutor) // Student查看成為老師頁面
+router.post('/:id/apply', studentController.postApplyTutor) // Student申請成為老師
 router.get('/:id/edit', studentController.getStudentEdit) // Student查看編輯頁面
 router.put('/:id/edit', upload.single('avatar'), studentController.putStudentEdit) // Student編輯頁面
 router.get('/:id', studentController.getStudent) // Student查看個人資料
