@@ -19,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
       TutorId: DataTypes.INTEGER,
       StudentId: DataTypes.INTEGER,
       BookingId: DataTypes.INTEGER,
-      content: DataTypes.TEXT
+      content: DataTypes.TEXT,
+      score: DataTypes.FLOAT
     },
     {
       sequelize,

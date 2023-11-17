@@ -19,6 +19,7 @@ module.exports = {
         BookingId: bookingSlice[item].id,
         TutorId: bookingSlice[item].Course.TutorId,
         content: faker.lorem.sentence({ min: 5, max: 15 }),
+        score: (Math.floor(Math.random() * 5) + Math.random()).toFixed(1),
         createdAt: new Date(),
         updatedAt: new Date()
       }))
