@@ -13,7 +13,7 @@ router.post('/:id/apply', studentController.postApplyTutor) // Student申請成�
 router.get('/:id/edit', studentController.getStudentEdit) // Student查看編輯頁面
 router.put('/:id/edit', upload.single('avatar'), studentController.putStudentEdit) // Student編輯頁面
 router.get('/:id/comment', studentController.getComment) // Student 查看評論畫面
-router.post('/:id/comment', studentController.postComment) // Student 發表評論
+router.post('/comment', studentController.postComment) // Student 發表評論
 router.get('/:id', studentController.getStudent) // Student查看個人資料
 
 module.exports = router

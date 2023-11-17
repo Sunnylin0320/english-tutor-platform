@@ -1,6 +1,6 @@
 const { Op } = require('sequelize')
 const Sequelize = require('sequelize')
-const { User, Course, Booking } = require('../models')
+const { User, Course, Booking, Comment } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const studentController = {
@@ -207,14 +207,24 @@ const studentController = {
   postComment: async (req, res, next) => {
     try {
       const id = req.params.id
-      const booking = await Booking.findByPk(id, {
-        include: [Course],
-        raw: true,
-        nest: true
+      const { content } = req.body
+
+      const booking = await Booking.findByPk(id)
+      if (!booking) {
+        throw new Error('預定紀錄不存在')
+      }
+
+      const comment = await Comment.create({
+        content,
+        score: req.body.score,
+        StudentId: req.user.id,
+        BookingId: id
       })
-      if (!booking) throw new Error('課程不存在')
-      res.render('students/comment', {
-        booking
+
+      return res.status(200).json({
+        status: 'success',
+        message: '成功發表回覆！',
+        comment
       })
     } catch (err) {
       next(err)
