@@ -26,6 +26,8 @@ module.exports = {
         const endTime = new Date(
           faker.date.between({ from: startTime, to: end })
         ) // 確保EndTime在StartTime之後
+        startTime.setHours(18, 0, 0)
+        endTime.setHours(startTime.getHours() + 3, 0, 0)
         return {
           TutorId: tutor.id,
           name: faker.lorem.sentence(),

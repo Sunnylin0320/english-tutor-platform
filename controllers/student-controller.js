@@ -10,28 +10,74 @@ const studentController = {
       nest: true,
       raw: true
     }).then(courses => {
-      const data = courses.map(r => ({
-        ...r
+      const data = courses.map(c => ({
+        ...c
       }))
       return res.render('students/courses', {
         courses: data
       })
     })
   },
-  getCourse: (req, res, next) => {
-    return Course.findByPk(req.params.id, {
-      include: User,
-      nest: true,
-      raw: true
-    })
-      .then(course => {
-        if (!course) throw new Error("Course didn't exist!")
-
-        res.render('students/course', {
-          course
-        })
+  getCourse: async (req, res, next) => {
+    try {
+      const { id } = req.params
+      const course = await Course.findByPk(id, {
+        include: [
+          {
+            model: User
+          }
+        ],
+        raw: true,
+        nest: true
       })
-      .catch(err => next(err))
+      if (!course) {
+        throw new Error('課程不存在')
+      }
+
+      const periods = ['18:00', '19:00', '20:00']
+
+      res.render('students/course', {
+        course,
+        periods
+      })
+    } catch (err) {
+      next(err)
+    }
+  },
+  postCourse: async (req, res, next) => {
+    try {
+      const courseId = req.params.id
+      const studentId = req.user.id
+
+      const course = await Course.findByPk(courseId)
+      if (!course) {
+        throw new Error('課程不存在！')
+      }
+
+      const newBooking = await Booking.create({
+        CourseId: courseId,
+        StudentId: studentId,
+        period: '60分鐘',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      })
+
+      if (newBooking) {
+        const tutor = await Course.findOne({
+          where: { id: courseId },
+          include: [User],
+          raw: true,
+          nest: true
+        })
+
+        req.flash('success_messages', '已成功預約課程!')
+        res.redirect('/')
+      } else {
+        res.json({ success: false, message: '預約失敗' })
+      }
+    } catch (err) {
+      next(err)
+    }
   },
   getStudent: async (req, res, next) => {
     try {
@@ -70,7 +116,11 @@ const studentController = {
         nest: true,
         raw: true
       })
-      res.render('students/profile', { student, newBookings, lessonHistory })
+      res.render('students/profile', {
+        student,
+        newBookings,
+        lessonHistory
+      })
     } catch (err) {
       next(err)
     }
