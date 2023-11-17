@@ -12,6 +12,7 @@ router.get('/:id/apply', studentController.getApplyTutor) // Student查看成為
 router.post('/:id/apply', studentController.postApplyTutor) // Student申請成為老師
 router.get('/:id/edit', studentController.getStudentEdit) // Student查看編輯頁面
 router.put('/:id/edit', upload.single('avatar'), studentController.putStudentEdit) // Student編輯頁面
+router.get('/:id/comment', studentController.getComment)
 router.get('/:id', studentController.getStudent) // Student查看個人資料
 
 module.exports = router

@@ -125,6 +125,7 @@ const studentController = {
       next(err)
     }
   },
+
   getStudentEdit: async (req, res, next) => {
     try {
       const id = req.params.id
@@ -186,6 +187,22 @@ const studentController = {
         res.redirect('/')
       })
       .catch(err => next(err))
+  },
+  getComment: async (req, res, next) => {
+    try {
+      const id = req.params.id
+      const booking = await Booking.findByPk(id, {
+        include: [Course],
+        raw: true,
+        nest: true
+      })
+      if (!booking) throw new Error('課程不存在')
+      res.render('students/comment', {
+        booking
+      })
+    } catch (err) {
+      next(err)
+    }
   }
 }
 

@@ -22,20 +22,24 @@
 
     <h3>Lesson History</h3>
     {{#each lessonHistory}}
-    <div class="card mb-3 my-3" style="max-width: 300px;">
-      <div class="row g-0">
-        <div class="col-md-4">
-          <img src="{{this.Course.User.avatar}}" class="img-fluid rounded-start" alt="...">
-        </div>
-        <div class="col-md-8">
-          <div class="card-body">
-            <h5 class="card-title">{{this.Course.User.name}}</h5>
-            <a href="/students/{{this.bookingId}}/comment" type="button" class="btn btn-outline-primary">Score</a>
-          </div>
-        </div>
+<div class="card mb-3 my-3" style="max-width: 300px;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{this.Course.User.avatar}}" class="img-fluid rounded-start" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        {{#if this.Course.User}}
+        <h5 class="card-title">{{this.Course.User.name}}</h5>
+        <a href="/students/{{this.id}}/comment" type="button" class="btn btn-outline-primary">Score</a>
+        {{else}}
+        <p>User doesn't exist</p>
+        {{/if}}
       </div>
     </div>
-    {{/each}}
+  </div>
+</div>
+{{/each}}
   </div>
 </div>
 
