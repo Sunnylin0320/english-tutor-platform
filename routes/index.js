@@ -15,6 +15,15 @@ router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
+router.get(
+  '/auth/facebook',
+  passport.authenticate('facebook', { scope: ['email', 'public_profile'] })
+)
+router.get(
+  '/auth/facebook/callback',
+  passport.authenticate('facebook', { failureRedirect: '/signin' }),
+  userController.signIn
+)
 router.get('/signout', userController.signOut)
 // admin 1支
 router.get('/admin/users', authenticated, authenticatedAdmin, adminController.getUsers) // admin 查看所有使用者
