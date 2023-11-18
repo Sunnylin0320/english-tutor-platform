@@ -6,25 +6,23 @@ const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const studentController = {
   getCourses: (req, res, next) => {
+    const keyword = req.query.keyword || ''
     const DEFAULT_LIMIT = 6
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
     const offset = getOffset(limit, page)
-    return Course.findAndCountAll({
-      include: User,
-      limit,
-      offset,
-      nest: true,
-      raw: true
-    }).then(courses => {
-      const data = courses.rows.map(c => ({
-        ...c
-      }))
-      return res.render('students/courses', {
-        courses: data,
-        pagination: getPagination(limit, page, courses.count)
+    Course.findAndCountAll({ include: User, limit, offset, raw: true, nest: true })
+      .then(coursesAll => {
+        const courses = coursesAll.rows.filter(course =>
+          course.name.toLowerCase().includes(keyword.toLowerCase()) || course.User.name.toLowerCase().includes(keyword.toLowerCase())
+        )
+        res.render('students/courses', {
+          courses,
+          keyword,
+          pagination: getPagination(limit, page, courses.count)
+        })
       })
-    })
+      .catch(err => next(err))
   },
   getCourse: async (req, res, next) => {
     try {
@@ -150,6 +148,8 @@ const studentController = {
     if (req.params.id !== req.user.id.toString()) {
       return res.redirect(`students/${req.user.id}`)
     }
+    if (name && name.length > 20) throw new Error("Name can't over 20 letter")
+    if (introduction && introduction.length > 140) throw new Error("Introduction can't over 140 letter")
     const { file } = req
     Promise.all([User.findByPk(req.params.id), imgurFileHandler(file)])
       .then(([user, filepath]) => {

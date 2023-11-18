@@ -18,8 +18,22 @@
       </ul>
     </div>
     {{/each}}
+    <div class="mb-8 my-3">
+      <h3 class="my-3">Teaching Style : </h3>
+      <p>{{tutor.teachingStyle}}</p>
+    </div>
+    <div class="mb-8 my-3">
+      <h3 class="my-3">Recent Received </h3>
+      {{#each recentReceived}}
+      <div class="d-flex flex-row bd-highlight ">
+        <div class="badge bg-danger h-25 mx-1">
+          <i class="fas fa-star fa-xs">{{this.score}}</i>
+        </div>
+        <p>{{this.content}}</p>
+      </div>
+      {{/each}}
+    </div>
   </div>
 </div>
   
    <a href="/tutors/{{user.id}}/edit" class="btn btn-info btn-block" style="width:200px">Edit</a>
-<a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>

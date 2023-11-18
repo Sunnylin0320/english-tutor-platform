@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize')
-const { User, Course, Booking } = require('../models')
+const { User, Course, Booking, Comment } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const tutorController = {
@@ -32,8 +32,15 @@ const tutorController = {
         nest: true,
         raw: true
       })
-      console.log('New bookings:', newBookings)
-      res.render('tutors/profile', { tutor, newBookings })
+      const recentReceived = await Comment.findAll({
+        where: {
+          TutorId: tutor.id
+        },
+        nest: true,
+        raw: true
+      })
+
+      res.render('tutors/profile', { tutor, newBookings, recentReceived })
     } catch (err) {
       next(err)
     }

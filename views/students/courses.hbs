@@ -1,3 +1,12 @@
+  <form action="/students/courses">
+        <div class="input-group">
+          <input type="text" name="keyword" class="form-control" placeholder="輸入老師姓名或課程名稱" aria-label="Teacher name or lesson name..."
+            value="{{keyword}}" aria-describedby="search-button">
+          <div class="input-group-append">
+            <button class="btn btn-major border" type="submit" id="search-button">搜尋</button>
+            </div>
+            </div>
+             </form>
 <div class="row mt-3">
   {{#each courses}}
     <div class="col-4" style="margin:0px;">
