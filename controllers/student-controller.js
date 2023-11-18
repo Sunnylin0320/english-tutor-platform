@@ -11,16 +11,36 @@ const studentController = {
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || DEFAULT_LIMIT
     const offset = getOffset(limit, page)
-    Course.findAndCountAll({ include: User, limit, offset, raw: true, nest: true })
+    Course.findAndCountAll({
+      include: [{ model: User }],
+      limit,
+      offset,
+      raw: true,
+      nest: true
+    })
       .then(coursesAll => {
-        const courses = coursesAll.rows.filter(course =>
-          course.name.toLowerCase().includes(keyword.toLowerCase()) || course.User.name.toLowerCase().includes(keyword.toLowerCase())
+        const courses = coursesAll.rows.filter(
+          course =>
+            course.name.toLowerCase().includes(keyword.toLowerCase()) ||
+            course.User.name.toLowerCase().includes(keyword.toLowerCase())
         )
-        res.render('students/courses', {
-          courses,
-          keyword,
-          pagination: getPagination(limit, page, courses.count)
+
+        User.findAll({
+          attributes: ['id', 'name'],
+          where: {
+            role: 'student'
+          },
+          raw: true
         })
+          .then(users => {
+            res.render('students/courses', {
+              courses,
+              keyword,
+              pagination: getPagination(limit, page, courses.count),
+              users
+            })
+          })
+          .catch(err => next(err))
       })
       .catch(err => next(err))
   },
@@ -122,10 +142,32 @@ const studentController = {
         nest: true,
         raw: true
       })
+      const learningHoursRank = await Booking.findAll({
+        attributes: [
+          'StudentId',
+          [
+            Sequelize.fn('SUM', Sequelize.col('Course.spendTime')),
+            'totalSpendTime'
+          ]
+        ],
+        include: [
+          {
+            model: Course,
+            attributes: []
+          }
+        ],
+        group: ['StudentId'],
+        order: [
+          [Sequelize.fn('SUM', Sequelize.col('Course.spendTime')), 'DESC']
+        ]
+      })
+      console.log(student)
+      console.log(learningHoursRank)
       res.render('students/profile', {
         student,
         newBookings,
-        lessonHistory
+        lessonHistory,
+        learningHoursRank
       })
     } catch (err) {
       next(err)
@@ -149,7 +191,7 @@ const studentController = {
       return res.redirect(`students/${req.user.id}`)
     }
     if (name && name.length > 20) throw new Error("Name can't over 20 letter")
-    if (introduction && introduction.length > 140) throw new Error("Introduction can't over 140 letter")
+    if (introduction && introduction.length > 140) { throw new Error("Introduction can't over 140 letter") }
     const { file } = req
     Promise.all([User.findByPk(req.params.id), imgurFileHandler(file)])
       .then(([user, filepath]) => {

@@ -38,7 +38,6 @@ module.exports = {
       })
     })
 
-
     while (commentsData.length < 20) {
       const randomBooking =
         pastBookings[Math.floor(Math.random() * pastBookings.length)]
