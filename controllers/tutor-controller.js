@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize')
 const { User, Course, Booking, Comment } = require('../models')
-const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const tutorController = {
   getTutor: async (req, res, next) => {
@@ -20,13 +19,17 @@ const tutorController = {
       const newBookings = await Booking.findAll({
         where: {
           CourseId: tutorCourses.map(course => course.id),
-          createdAt: { [Sequelize.Op.gt]: new Date('2023-11-01') }
+          period: { [Sequelize.Op.gt]: new Date('2023-11-20') }
         },
         include: [
           {
             model: Course,
             attributes: ['name', 'link'],
             include: [{ model: User }]
+          },
+          {
+            model: User,
+            attributes: ['name']
           }
         ],
         nest: true,
@@ -62,7 +65,6 @@ const tutorController = {
       if (req.params.id !== req.user.id.toString()) {
         return res.redirect(`/tutors/${req.user.id}`)
       }
-
 
       await Promise.all([User.findByPk(req.params.id)])
         .then(([user]) => {

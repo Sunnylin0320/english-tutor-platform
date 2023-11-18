@@ -1,7 +1,7 @@
 const { Op } = require('sequelize')
 const Sequelize = require('sequelize')
 const { User, Course, Booking, Comment } = require('../models')
-const { getOffset, getPagination } = require('../helpers/pagination-helpers')
+const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const studentController = {

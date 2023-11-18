@@ -12,8 +12,8 @@
     {{#each newBookings}}
     <div class="list-group-item">
       <ul>
-        <li><strong>Time</strong> : {{this.createdAt}}</li>
-        <li><strong>Tutor's Name</strong> : {{this.Course.User.name}}</li>
+        <li><strong>Time</strong> : {{this.period}}</li>
+        <li><strong>Student's Name</strong> : {{this.User.name}}</li>
         <li><strong>Session Link</strong> : <a href="{{this.Course.link}}">{{this.Course.link}}</a></li>
       </ul>
     </div>

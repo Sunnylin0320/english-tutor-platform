@@ -10,14 +10,14 @@ module.exports = {
     )
 
     const pastCourses = await queryInterface.sequelize.query(
-      'SELECT id, endTime FROM Courses WHERE endTime < NOW() LIMIT 10;',
+      'SELECT id, startTime, endTime, spendTime FROM Courses WHERE endTime < NOW() LIMIT 10;',
       {
         type: Sequelize.QueryTypes.SELECT
       }
     )
 
     const futureCourses = await queryInterface.sequelize.query(
-      'SELECT id, endTime FROM Courses WHERE endTime > NOW() LIMIT 10;',
+      'SELECT id, startTime, endTime, spendTime FROM Courses WHERE endTime > NOW() LIMIT 10;',
       {
         type: Sequelize.QueryTypes.SELECT
       }
@@ -25,76 +25,55 @@ module.exports = {
 
     const bookingsData = []
 
-    students.forEach(student => {
-      for (let i = 0; i < 10; i++) {
+    futureCourses.forEach(course => {
+      students.forEach(student => {
+        const startDate = new Date(course.startTime)
+        startDate.setHours(0, 0, 0)
+        const endDate = new Date(course.endTime)
+        endDate.setHours(0, 0, 0)
+        const daysInBetween = (endDate - startDate) / (24 * 60 * 60 * 1000)
+        const randomDay = Math.floor(Math.random() * (daysInBetween + 1))
+        startDate.setDate(startDate.getDate() + randomDay)
+
+        const possibleTimes = ['18:00', '19:00', '20:00']
+        const randomTime =
+          possibleTimes[Math.floor(Math.random() * possibleTimes.length)]
+
         const bookingData = {
           StudentId: student.id,
-          CourseId: pastCourses[i].id,
-          period: pastCourses[i].spendTime,
+          CourseId: course.id, // 使用正确的 course.id
+          period: `${startDate.toISOString().substring(0, 10)} ${randomTime}`,
           createdAt: new Date(),
           updatedAt: new Date()
         }
         bookingsData.push(bookingData)
-      }
+      })
     })
 
-    const selectedStudents = []
-    while (selectedStudents.length < 5) {
-      const randomStudent =
-        students[Math.floor(Math.random() * students.length)]
-      if (!selectedStudents.includes(randomStudent)) {
-        selectedStudents.push(randomStudent)
-      }
-    }
+    students.forEach(student => {
+      pastCourses.forEach(course => {
+        const startDate = new Date(course.startTime)
+        startDate.setHours(0, 0, 0)
+        const endDate = new Date(course.endTime)
+        endDate.setHours(0, 0, 0)
+        const daysInBetween = (endDate - startDate) / (24 * 60 * 60 * 1000)
+        const randomDay = Math.floor(Math.random() * (daysInBetween + 1))
+        startDate.setDate(startDate.getDate() + randomDay)
 
-    const selectedCourses = []
-    while (selectedCourses.length < 10) {
-      const randomCourse =
-        futureCourses[Math.floor(Math.random() * futureCourses.length)]
-      if (!selectedCourses.includes(randomCourse)) {
-        selectedCourses.push(randomCourse)
-      }
-    }
-
-    selectedStudents.forEach(student => {
-      let coursesToBook = 2
-      const studentId = student.id
-
-      while (coursesToBook > 0) {
-        const randomCourse = selectedCourses.pop()
-        if (!randomCourse) {
-          break
-        }
+        const possibleTimes = ['18:00', '19:00', '20:00']
+        const randomTime =
+          possibleTimes[Math.floor(Math.random() * possibleTimes.length)]
 
         const bookingData = {
-          StudentId: studentId,
-          CourseId: randomCourse.id,
-          period: randomCourse.spendTime,
+          StudentId: student.id,
+          CourseId: course.id, // 使用正确的 course.id
+          period: `${startDate.toISOString().substring(0, 10)} ${randomTime}`,
           createdAt: new Date(),
           updatedAt: new Date()
         }
         bookingsData.push(bookingData)
-
-        coursesToBook--
-      }
+      })
     })
-
-    if (selectedStudents.length < 2) {
-      const randomStudent =
-        students[Math.floor(Math.random() * students.length)]
-      const randomCourse = selectedCourses.pop()
-
-      if (randomStudent && randomCourse) {
-        const bookingData = {
-          StudentId: randomStudent.id,
-          CourseId: randomCourse.id,
-          period: randomCourse.spendTime,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        }
-        bookingsData.push(bookingData)
-      }
-    }
 
     await queryInterface.bulkInsert('Bookings', bookingsData, {})
   },
