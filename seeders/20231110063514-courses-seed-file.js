@@ -1,4 +1,5 @@
 'use strict'
+const { randomAvaiDay } = require('../helpers/dayjs-helpers')
 const { faker } = require('@faker-js/faker')
 
 module.exports = {
@@ -16,7 +17,8 @@ module.exports = {
     const pastTo = '2023-10-31'
     const newFrom = '2023-11-20'
     const newTo = '2023-12-03'
-    const courseCount = 5 // 要生成的每個類別的課程數量
+    const courseCount = 1 // 要生成的每個類別的課程數量
+    const spendTime = [30, 60]
 
     for (const tutor of tutors) {
       const generateCourseData = (start, end) => {
@@ -33,8 +35,8 @@ module.exports = {
           name: faker.lorem.sentence(),
           startTime,
           endTime,
-          spendTime: '30 minutes',
-          bookingDay: new Date(faker.date.between({ from: startTime, to: endTime })),
+          spendTime: spendTime[Math.floor(Math.random() * spendTime.length)],
+          bookingDay: randomAvaiDay(),
           link: faker.internet.url(),
           createdAt: new Date(),
           updatedAt: new Date()

@@ -56,26 +56,34 @@ const tutorController = {
       next(err)
     }
   },
-  putTutorEdit: (req, res, next) => {
-    const { name, nation, introduction } = req.body
-    if (req.params.id !== req.user.id.toString()) {
-      return res.redirect(`tutors/${req.user.id}`)
-    }
-    const { file } = req
-    Promise.all([User.findByPk(req.params.id), imgurFileHandler(file)])
-      .then(([user, filepath]) => {
-        return user.update({
-          name,
-          nation,
-          introduction,
-          avatar: filepath || user.avatar
+  putTutorEdit: async (req, res, next) => {
+    try {
+      const { name, introduction, teachingStyle, spendTime, bookingDay, startTime, endTime } = req.body
+      if (req.params.id !== req.user.id.toString()) {
+        return res.redirect(`/tutors/${req.user.id}`)
+      }
+
+
+      await Promise.all([User.findByPk(req.params.id)])
+        .then(([user]) => {
+          return user.update({
+            name,
+            introduction,
+            teachingStyle,
+            spendTime,
+            bookingDay,
+            startTime,
+            endTime
+          })
         })
-      })
-      .then(() => {
-        req.flash('success_messages', 'Profile was successfully to update')
-        res.redirect('edit')
-      })
-      .catch(err => next(err))
+        .then(() => {
+          req.flash('success_messages', 'Profile was successfully updated')
+          res.redirect('/edit')
+        })
+        .catch(err => next(err))
+    } catch (err) {
+      next(err)
+    }
   }
 }
 

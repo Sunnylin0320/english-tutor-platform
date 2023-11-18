@@ -7,10 +7,6 @@
     <input type="text" id="name" name="name" class="form-control" placeholder="Name" value="{{user.name}}" required>
   </div>
   <div class="form-row mb-3">
-    <label class="form-label" for="image">Image</label>
-    <input class="form-control" type="file" class="form-control-file" id="image" name="image">
-  </div>
-  <div class="form-row mb-3">
     <label class="form-label" for="introduction"> Your Introduction</label>
     <textarea class="form-control" id="introduction" name="introduction" rows="3"required>{{user.introduction}}</textarea>
   </div>
@@ -18,32 +14,29 @@
     <label class="form-label" for="teachingStyle">Your Teaching Style</label>
     <textarea class="form-control" id="teachingStyle" name="teachingStyle" rows="3"required>{{user.teachingStyle}}</textarea>
   </div>
-  <div class="form-row mb-3">
-    <label class="form-label" for="country">Country</label>
-    <input type="text" id="country" name="country" class="form-control" placeholder="Country" value="{{user.nation}}">
-  </div>
-  <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-  <input type="checkbox" class="btn-check" id="MON" autocomplete="off" value=0 name="days">
-  <label class="btn btn-outline-primary me-3" for="MON">星期一</label>
-
-  <input type="checkbox" class="btn-check" id="TUE" autocomplete="off" value=1 name="days">
-  <label class="btn btn-outline-primary me-3" for="TUE">星期二</label>
-
-  <input type="checkbox" class="btn-check" id="WED" autocomplete="off" value=2 name="days">
-  <label class="btn btn-outline-primary me-3" for="WED">星期三</label>
-
-  <input type="checkbox" class="btn-check" id="THU" autocomplete="off" value=3 name="days">
-  <label class="btn btn-outline-primary me-3" for="THU">星期四</label>
-
-  <input type="checkbox" class="btn-check" id="FRI" autocomplete="off" value=4 name="days">
-  <label class="btn btn-outline-primary me-3" for="FRI">星期五</label>
-
-  <input type="checkbox" class="btn-check" id="SAT" autocomplete="off" value=5 name="days">
-  <label class="btn btn-outline-primary me-3" for="SAT">星期六</label>
-
-  <input type="checkbox" class="btn-check" id="SUN" autocomplete="off" value=6 name="days">
-  <label class="btn btn-outline-primary me-3" for="SUN">星期日</label>
+  <div class="form-row mb-3 w-25">
+  <label class="form-label" for="spendTime">單堂課程時間（分鐘）</label>
+  <select class="form-control" id="spendTime" name="spendTime">
+    <option value="0.5">30分鐘</option>
+    <option value="1">60分鐘</option>
+  </select>
 </div>
+<div class="form-row mb-3">
+  <label class="form-label" for="link">課程視訊連結</label>
+  <input type="text" id="link" name="link" class="form-control" placeholder="Link..." required autofocus>
+</div>
+
+  <div class="mb-3">
+          <label for="availableDay" class="mb-2" style="margin-right:10px">開放預約</label>
+          <input type="checkbox" name="availableDay" value="0" style="margin-left:5px" {{#if (eq course.availableDay 0)}}checked {{/if}}>星期日
+          <input type="checkbox" name="availableDay" value="1" style="margin-left:5px" {{#if (eq course.availableDay 1)}}checked {{/if}}>星期一
+          <input type="checkbox" name="availableDay" value="2" style="margin-left:5px" {{#if (eq course.availableDay 2)}}checked {{/if}}>星期二
+          <input type="checkbox" name="availableDay" value="3" style="margin-left:5px" {{#if (eq course.availableDay 3)}}checked {{/if}}>星期三
+          <input type="checkbox" name="availableDay" value="4" style="margin-left:5px" {{#if (eq course.availableDay 4)}}checked {{/if}}>星期四
+          <input type="checkbox" name="availableDay" value="5" style="margin-left:5px" {{#if (eq course.availableDay 5)}}checked {{/if}}>星期五
+          <input type="checkbox" name="availableDay" value="6" style="margin-left:5px" {{#if (eq course.availableDay 6)}}checked {{/if}}>星期六
+        </div>
+
 
 <div class="form-row mb-3">
   <label class="form-label" for="startTime">開始時間</label>

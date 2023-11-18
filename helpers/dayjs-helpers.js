@@ -20,9 +20,26 @@ const formatTime = datetime => {
     .replace('PM', '下午')
 }
 
+const randomAvaiDay = () => {
+  const day = [0, 1, 2, 3, 4, 5, 6]
+  let randomAvaiDay = ''
+  // 隨機選出可上課的時間
+  for (let i = 0; i < day.length; i++) {
+    if (Math.floor(Math.random() * 2) === 1) {
+      randomAvaiDay = randomAvaiDay + day[i]
+    }
+    if (i === 6 && randomAvaiDay === '') {
+      randomAvaiDay =
+        randomAvaiDay + day[Math.floor(Math.random() * day.length)]
+    }
+  }
+  return randomAvaiDay
+}
+
 module.exports = {
   currentYear: () => dayjs().year(), // 取得當年年份作為 currentYear 的屬性值
   relativeTimeFromNow: calculateRelativeTime, // 計算與現在時間的相對時間差
   formatDate,
-  formatTime
+  formatTime,
+  randomAvaiDay
 }
