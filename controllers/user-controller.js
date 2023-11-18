@@ -7,7 +7,7 @@ const userController = {
   },
   signUp: (req, res, next) => {
     if (req.body.password !== req.body.passwordCheck) {
-      throw new Error('Passwords do not match!')
+      throw new Error('password跟checkedpassword需一致')
     }
 
     User.findOne({ where: { email: req.body.email } })

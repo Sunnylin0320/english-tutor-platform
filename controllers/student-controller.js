@@ -1,20 +1,28 @@
 const { Op } = require('sequelize')
 const Sequelize = require('sequelize')
 const { User, Course, Booking, Comment } = require('../models')
+const { getOffset, getPagination } = require('../helpers/pagination-helpers')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const studentController = {
   getCourses: (req, res, next) => {
-    return Course.findAll({
+    const DEFAULT_LIMIT = 6
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
+    const offset = getOffset(limit, page)
+    return Course.findAndCountAll({
       include: User,
+      limit,
+      offset,
       nest: true,
       raw: true
     }).then(courses => {
-      const data = courses.map(c => ({
+      const data = courses.rows.map(c => ({
         ...c
       }))
       return res.render('students/courses', {
-        courses: data
+        courses: data,
+        pagination: getPagination(limit, page, courses.count)
       })
     })
   },
