@@ -5,29 +5,31 @@ const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
   },
-  signUp: (req, res, next) => {
-    if (req.body.password !== req.body.passwordCheck) {
-      throw new Error('password跟checkedpassword需一致')
+  signUp: async (req, res, next) => {
+    try {
+      if (req.body.password !== req.body.passwordCheck) {
+        throw new Error('password跟checkedpassword需一致')
+      }
+
+      const user = await User.findOne({ where: { email: req.body.email } })
+      if (user) {
+        throw new Error('Email already exists!')
+      }
+
+      const hash = await bcrypt.hash(req.body.password, 10)
+
+      await User.create({
+        name: req.body.name,
+        email: req.body.email,
+        password: hash,
+        role: 'student'
+      })
+
+      req.flash('success_messages', '成功註冊帳號！')
+      res.redirect('/signin')
+    } catch (err) {
+      next(err)
     }
-
-    User.findOne({ where: { email: req.body.email } })
-      .then(user => {
-        if (user) throw new Error('Email already exists!')
-
-        return bcrypt.hash(req.body.password, 10)
-      })
-      .then(hash =>
-        User.create({
-          name: req.body.name,
-          email: req.body.email,
-          password: hash
-        })
-      )
-      .then(() => {
-        req.flash('success_messages', '成功註冊帳號！')
-        res.redirect('/signin')
-      })
-      .catch(err => next(err))
   },
   signInPage: (req, res) => {
     res.render('signin')

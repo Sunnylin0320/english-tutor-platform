@@ -16,7 +16,6 @@ const { getUser } = require('./helpers/auth-helpers')
 const routes = require('./routes')
 const app = express()
 const port = process.env.PORT || 3000
-const SESSION_SECRET = 'secret'
 
 const hbs = exphbs({
   extname: '.hbs',
@@ -29,7 +28,11 @@ app.engine('hbs', hbs)
 app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 app.use(
-  session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false })
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+  })
 )
 app.use(passport.initialize())
 app.use(passport.session())
