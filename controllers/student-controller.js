@@ -2,7 +2,7 @@ const { Op } = require('sequelize')
 const Sequelize = require('sequelize')
 const { User, Course, Booking, Comment } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const studentController = {
   getCourses: (req, res, next) => {
@@ -193,7 +193,7 @@ const studentController = {
     if (name && name.length > 20) throw new Error("Name can't over 20 letter")
     if (introduction && introduction.length > 140) { throw new Error("Introduction can't over 140 letter") }
     const { file } = req
-    Promise.all([User.findByPk(req.params.id), localFileHandler(file)])
+    Promise.all([User.findByPk(req.params.id), imgurFileHandler(file)])
       .then(([user, filepath]) => {
         return user.update({
           name,
