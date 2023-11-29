@@ -41,5 +41,8 @@ module.exports = {
   relativeTimeFromNow: calculateRelativeTime, // 計算與現在時間的相對時間差
   formatDate,
   formatTime,
-  randomAvaiDay
+  randomAvaiDay,
+  ifCond: function (a, b, options) {
+    return a === b ? options.fn(this) : options.inverse(this)
+  }
 }

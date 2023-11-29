@@ -48,21 +48,21 @@
          <div class="row col-9">
     <nav class=" d-flex justify-content-center" aria-label="page navigation">
       <ul class="pagination">
-        <li class="page-item {{#if (eq pagination.currentPage 1)}}disabled{{/if}}">
+        <li class="page-item {{#ifCond pagination.currentPage 1}}disabled{{/ifCond}}">
           <a class="page-link" href="/students/courses?page={{pagination.prev}}&keyword={{keyword}}" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
         {{#each pagination.pages}}
-        {{#if (eq this ../pagination.currentPage)}}
+        {{#ifCond this ../pagination.currentPage}}
         <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
         {{else}}
         <li class="page-item">
           <a class="page-link" href="/students/courses?page={{this}}&keyword={{../keyword}}">{{this}}</a>
         </li>
-        {{/if}}
+        {{/ifCond}}
         {{/each}}
-        <li class="page-item {{#if (eq pagination.currentPage pagination.totalPage)}}disabled{{/if}}">
+        <li class="page-item {{#ifCond pagination.currentPage pagination.totalPage}}disabled{{/ifCond}}">
           <a class="page-link" href="/students/courses?page={{pagination.next}}&keyword={{keyword}}" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
           </a>
