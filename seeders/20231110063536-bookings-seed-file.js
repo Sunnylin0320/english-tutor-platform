@@ -1,4 +1,5 @@
 'use strict'
+const { TUTOR_PER_NEWBOOKING, BOOKING_PER_STUDENT, STUDENT_AMOUNT, TUTOR_AMOUNT, getAvailableTime } = require('../helpers/seeder-helpers')
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -9,75 +10,38 @@ module.exports = {
       }
     )
 
-    const pastCourses = await queryInterface.sequelize.query(
-      'SELECT id, startTime, endTime, spendTime FROM Courses WHERE endTime < NOW() LIMIT 10;',
+    const courses = await queryInterface.sequelize.query(
+      'SELECT id, spendTime FROM Courses;',
       {
         type: Sequelize.QueryTypes.SELECT
       }
     )
 
-    const futureCourses = await queryInterface.sequelize.query(
-      'SELECT id, startTime, endTime, spendTime FROM Courses WHERE endTime > NOW() LIMIT 10;',
-      {
-        type: Sequelize.QueryTypes.SELECT
-      }
-    )
-
-    const bookingsData = []
-
-    futureCourses.forEach(course => {
-      students.forEach(student => {
-        const startDate = new Date(course.startTime)
-        startDate.setHours(0, 0, 0)
-        const endDate = new Date(course.endTime)
-        endDate.setHours(0, 0, 0)
-        const daysInBetween = (endDate - startDate) / (24 * 60 * 60 * 1000)
-        const randomDay = Math.floor(Math.random() * (daysInBetween + 1))
-        startDate.setDate(startDate.getDate() + randomDay)
-
-        const possibleTimes = ['18:00', '19:00', '20:00']
-        const randomTime =
-          possibleTimes[Math.floor(Math.random() * possibleTimes.length)]
-
-        const bookingData = {
-          StudentId: student.id,
-          CourseId: course.id, // 使用正确的 course.id
-          period: `${startDate.toISOString().substring(0, 10)} ${randomTime}`,
+    // 每個使用者有至少 4 個 Lesson History 可以打分
+    await queryInterface.bulkInsert('Bookings', [
+      ...Array.from(
+        { length: STUDENT_AMOUNT * BOOKING_PER_STUDENT },
+        (_, i) => ({
+          StudentId: students[Math.floor(i / BOOKING_PER_STUDENT)].id,
+          CourseId: courses[i % courses.length].id,
+          period: getAvailableTime(i, 1),
           createdAt: new Date(),
           updatedAt: new Date()
-        }
-        bookingsData.push(bookingData)
-      })
-    })
-
-    students.forEach(student => {
-      pastCourses.forEach(course => {
-        const startDate = new Date(course.startTime)
-        startDate.setHours(0, 0, 0)
-        const endDate = new Date(course.endTime)
-        endDate.setHours(0, 0, 0)
-        const daysInBetween = (endDate - startDate) / (24 * 60 * 60 * 1000)
-        const randomDay = Math.floor(Math.random() * (daysInBetween + 1))
-        startDate.setDate(startDate.getDate() + randomDay)
-
-        const possibleTimes = ['18:00', '19:00', '20:00']
-        const randomTime =
-          possibleTimes[Math.floor(Math.random() * possibleTimes.length)]
-
-        const bookingData = {
-          StudentId: student.id,
-          CourseId: course.id, // 使用正确的 course.id
-          period: `${startDate.toISOString().substring(0, 10)} ${randomTime}`,
+        })
+      ),
+      // 每個老師有至少 2 個 New Lesson
+      ...Array.from(
+        { length: TUTOR_PER_NEWBOOKING * TUTOR_AMOUNT },
+        (_, i) => ({
+          StudentId: students[Math.floor(Math.random() * STUDENT_AMOUNT)].id,
+          CourseId: courses[Math.floor(i / TUTOR_PER_NEWBOOKING)].id,
+          period: getAvailableTime(i),
           createdAt: new Date(),
           updatedAt: new Date()
-        }
-        bookingsData.push(bookingData)
-      })
-    })
-
-    await queryInterface.bulkInsert('Bookings', bookingsData, {})
+        })
+      )
+    ])
   },
-
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete('Bookings', {})
   }
