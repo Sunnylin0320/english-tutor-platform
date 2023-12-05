@@ -24,7 +24,8 @@ module.exports = {
         (_, i) => ({
           StudentId: students[Math.floor(i / BOOKING_PER_STUDENT)].id,
           CourseId: courses[i % courses.length].id,
-          period: getAvailableTime(i, 1),
+          period: courses[i % courses.length].spendTime,
+          classTime: getAvailableTime(i, 1),
           createdAt: new Date(),
           updatedAt: new Date()
         })
@@ -35,7 +36,8 @@ module.exports = {
         (_, i) => ({
           StudentId: students[Math.floor(Math.random() * STUDENT_AMOUNT)].id,
           CourseId: courses[Math.floor(i / TUTOR_PER_NEWBOOKING)].id,
-          period: getAvailableTime(i),
+          period: courses[Math.floor(i / TUTOR_PER_NEWBOOKING)].spendTime,
+          classTime: getAvailableTime(i),
           createdAt: new Date(),
           updatedAt: new Date()
         })

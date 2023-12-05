@@ -9,20 +9,64 @@
     <h4>Country : {{course.User.nation}}</h3>
     <h4>課程名稱 : {{course.name}}</h3>
   </div>
-<form id="myForm" action="/students/courses/{{course.id}}" method="POST">
-  <div class="form-row mb-3 w-25">
-    <label class="form-label" for="timePeriod">預約上課 : </label>
-    <select class="form-control" id="timePeriod" name="timePeriod">
-      <option value="18:00">18:00</option>
-      <option value="19:00">19:00</option>
-      <option value="20:00">20:00</option>
-    </select>
+
+      <div class="col-6" id="bookingForm">
+        <div class="col-10 d-flex flex-column">
+          <form action="/students/courses/{{course.id}}" method="POST">
+            <input type="hidden" name="courseId" value="{{../courseId}}">
+            <h6 class="mb-3 p-2" style="background-color:beige">
+              預約上課
+            </h6>
+
+            <select name="classTime" id="classTime" class="form-select form-select-sm mt-3"
+              aria-label=".form-select-sm example">
+              <option selected>Time</option>
+              {{#each ../adjustClass}}
+              <option value="{{this}}">{{this}}</option>
+              {{/each}}
+            </select>
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary btn-sm mt-3">Submit</button>
+            </div>
+          </form>
+        </div>
+        <br>
+      </div>
+    </div>
   </div>
-  <input type="hidden" name="courseId" value="{{course.id}}">
-  <button type="button" class="custom-solid-button booking-btn btn btn-primary mb-3" data-bs-toggle="modal" id="booking-course"
-    data-bs-target="#book-course-model">預約</button>
-  {{> booking}}
-</form>
+</div>
+
+{{#if modalInfo.result}}
+<div class="modal fade" id="reserve_modal" tabindex="-1" aria-labelledby="reserveModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{modalInfo.result}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      {{#if modalInfo.name}}
+      <div class="modal-body">
+        <p>Time: {{modalInfo.classTime}}</p>
+        <p>Tutor's Name: {{modalInfo.name}}</p>
+        <p>Link: {{modalInfo.classUrl}}</p>
+      </div>
+      {{/if}}
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">確認預約!</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const myModal = new bootstrap.Modal(document.getElementById('reserve_modal'))
+    myModal.show()
+  })
+</script>
+{{/if}}
+<br>
+
    <hr>
 </div>
 <div class="row" style="text-align: left;">

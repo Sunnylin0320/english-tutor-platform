@@ -12,11 +12,24 @@ module.exports = {
       }
     )
 
+    const CourseNames = [
+      '多益',
+      '雅思',
+      '托福',
+      '英語口說',
+      '商務英語',
+      '英語寫作',
+      '英語口音訓練',
+      '英語會話',
+      '英語文學',
+      '職場英語'
+    ]
+
     await queryInterface.bulkInsert(
       'Courses',
       Array.from({ length: TUTOR_AMOUNT }, (_, i) => ({
         TutorId: tutors[i].id,
-        name: faker.lorem.sentence(),
+        name: CourseNames[Math.floor(Math.random() * CourseNames.length)],
         startTime: getAvailableTime(i).toString(),
         spendTime: getMinuteDuration(),
         bookingDay: randomAvaiDay(),

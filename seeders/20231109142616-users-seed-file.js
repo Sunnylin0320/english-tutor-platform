@@ -45,9 +45,7 @@ module.exports = {
         introduction: faker.string.alphanumeric({
           length: { min: 1, max: 160 }
         }),
-        teachingStyle: faker.string.alphanumeric({
-          length: { min: 1, max: 160 }
-        }),
+        teachingStyle: '以生動活潑的教學風格而聞名。',
         avatar: faker.image.avatar(),
         nation: faker.location.country(),
         role: 'tutor',

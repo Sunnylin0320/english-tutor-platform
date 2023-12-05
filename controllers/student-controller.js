@@ -48,6 +48,14 @@ const studentController = {
     try {
       const { id } = req.params
       const course = await Course.findByPk(id, {
+        attributes: [
+          'id',
+          'name',
+          'startTime',
+          'spendTime',
+          'bookingDay',
+          'link'
+        ],
         include: [
           {
             model: User
@@ -60,11 +68,8 @@ const studentController = {
         throw new Error('課程不存在')
       }
 
-      const periods = ['18:00', '19:00', '20:00']
-
       res.render('students/course', {
-        course,
-        periods
+        course
       })
     } catch (err) {
       next(err)
@@ -72,35 +77,26 @@ const studentController = {
   },
   postCourse: async (req, res, next) => {
     try {
-      const courseId = req.params.id
       const studentId = req.user.id
+      const { courseId, classTime } = req.body
 
-      const course = await Course.findByPk(courseId)
+      const course = await Course.findByPk(courseId, {
+        attributes: ['id', 'spendTime']
+      })
+
       if (!course) {
         throw new Error('課程不存在！')
       }
 
-      const newBooking = await Booking.create({
+      await Booking.create({
         CourseId: courseId,
         StudentId: studentId,
-        period: '60分鐘',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        period: course.spendTime,
+        classTime
       })
-
-      if (newBooking) {
-        const tutor = await Course.findOne({
-          where: { id: courseId },
-          include: [User],
-          raw: true,
-          nest: true
-        })
-
-        req.flash('success_messages', '已成功預約課程!')
-        res.redirect('/')
-      } else {
-        res.json({ success: false, message: '預約失敗' })
-      }
+      return res.status(200).json({
+        status: 'success'
+      })
     } catch (err) {
       next(err)
     }
@@ -191,7 +187,9 @@ const studentController = {
       return res.redirect(`students/${req.user.id}`)
     }
     if (name && name.length > 20) throw new Error("Name can't over 20 letter")
-    if (introduction && introduction.length > 140) { throw new Error("Introduction can't over 140 letter") }
+    if (introduction && introduction.length > 140) {
+      throw new Error("Introduction can't over 140 letter")
+    }
     const { file } = req
     Promise.all([User.findByPk(req.params.id), imgurFileHandler(file)])
       .then(([user, filepath]) => {
