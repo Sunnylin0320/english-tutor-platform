@@ -12,7 +12,10 @@ module.exports = {
     return dayjs()
       .add(getDay, 'day')
       .subtract(lastMonth, 'month')
-      .format('YYYY-MM-DD')
+      .set('hour', 18)
+      .set('minute', 0)
+      .set('second', 0)
+      .format('YYYY-MM-DD HH:mm:ss')
   },
   getMinuteDuration: () => (Math.random() < 0.5 ? 30 : 60)
 }

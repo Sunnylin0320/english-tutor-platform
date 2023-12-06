@@ -1,8 +1,10 @@
 const { Op } = require('sequelize')
 const Sequelize = require('sequelize')
+const dayjs = require('dayjs')
 const { User, Course, Booking, Comment } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const { imgurFileHandler } = require('../helpers/file-helpers')
+const { getAvailablePeriod } = require('../helpers/time-helpers')
 
 const studentController = {
   getCourses: (req, res, next) => {
@@ -48,14 +50,6 @@ const studentController = {
     try {
       const { id } = req.params
       const course = await Course.findByPk(id, {
-        attributes: [
-          'id',
-          'name',
-          'startTime',
-          'spendTime',
-          'bookingDay',
-          'link'
-        ],
         include: [
           {
             model: User
@@ -68,8 +62,35 @@ const studentController = {
         throw new Error('課程不存在')
       }
 
+      const formattedcourse = await Course.findByPk(id, {
+        attributes: ['startTime', 'endTime', 'spendTime', 'bookingDay'],
+        raw: true,
+        nest: true
+      })
+      formattedcourse.spendTime = parseInt(formattedcourse.spendTime)
+
+      const bookingData = await Booking.findAll({
+        raw: true,
+        nest: true,
+        attributes: ['classTime'],
+        where: {
+          CourseId: course.id
+        }
+      })
+      const formattedBookingData = bookingData.map(item => ({
+        classTime: dayjs(item.classTime)
+          .subtract(8, 'hour')
+          .format('YYYY-MM-DD HH:mm:ss')
+      }))
+
+      console.log(formattedcourse)
+      console.log(formattedBookingData)
+
+      const availableTime = getAvailablePeriod(formattedcourse, formattedBookingData)
+
       res.render('students/course', {
-        course
+        course,
+        availableTime
       })
     } catch (err) {
       next(err)
@@ -94,9 +115,9 @@ const studentController = {
         period: course.spendTime,
         classTime
       })
-      return res.status(200).json({
-        status: 'success'
-      })
+
+      req.flash('success_messages', '已成功預約課程!')
+      res.redirect('/')
     } catch (err) {
       next(err)
     }
