@@ -79,7 +79,6 @@ const studentController = {
       })
       const formattedBookingData = bookingData.map(item => ({
         classTime: dayjs(item.classTime)
-          .subtract(8, 'hour')
           .format('YYYY-MM-DD HH:mm:ss')
       }))
 
@@ -99,25 +98,23 @@ const studentController = {
   postCourse: async (req, res, next) => {
     try {
       const studentId = req.user.id
-      const { courseId, classTime } = req.body
+      const courseId = req.params.id
+      const { classTime } = req.body
 
-      const course = await Course.findByPk(courseId, {
-        attributes: ['id', 'spendTime']
-      })
-
+      const course = await Course.findByPk(courseId)
       if (!course) {
-        throw new Error('課程不存在！')
+        throw new Error('該課程不存在！')
       }
 
       await Booking.create({
-        CourseId: courseId,
         StudentId: studentId,
+        CourseId: courseId,
         period: course.spendTime,
         classTime
       })
 
       req.flash('success_messages', '已成功預約課程!')
-      res.redirect('/')
+      res.redirect(`/students/courses/${courseId}`)
     } catch (err) {
       next(err)
     }
