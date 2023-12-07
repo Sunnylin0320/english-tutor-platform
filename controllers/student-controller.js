@@ -128,9 +128,10 @@ const studentController = {
         throw new Error("User doesn't exist.")
       }
       const newBookings = await Booking.findAll({
+        attributes: ['classTime'],
         where: {
           StudentId: id,
-          createdAt: { [Sequelize.Op.gt]: new Date('2023-11-01') }
+          classTime: { [Sequelize.Op.gt]: new Date() }
         },
         include: [
           {
@@ -139,12 +140,13 @@ const studentController = {
           }
         ],
         nest: true,
-        raw: true
+        raw: true,
+        order: [['classTime', 'ASC']]
       })
       const lessonHistory = await Booking.findAll({
         where: {
           StudentId: id,
-          createdAt: { [Op.lt]: new Date() }
+          classTime: { [Op.lt]: new Date() }
         },
         include: [
           {
@@ -272,26 +274,27 @@ const studentController = {
   },
   postComment: async (req, res, next) => {
     try {
-      const id = req.params.id
-      const { content } = req.body
-
-      const booking = await Booking.findByPk(id)
-      if (!booking) {
-        throw new Error('預定紀錄不存在')
-      }
-
-      const comment = await Comment.create({
-        content,
+      const UserId = req.user.id
+      const BookingId = req.body.bookingId
+      const booking = await Booking.findByPk(BookingId, {
+        include: [
+          {
+            model: Course,
+            include: [{ model: User }]
+          }
+        ]
+      })
+      const TutorId = booking.Course.User.id
+      await Comment.create({
+        content: req.body.content,
         score: req.body.score,
         StudentId: req.user.id,
-        BookingId: id
+        BookingId,
+        TutorId
       })
 
-      return res.status(200).json({
-        status: 'success',
-        message: '成功發表回覆！',
-        comment
-      })
+      req.flash('success_messages', '已成功發表評論!')
+      res.redirect(`/students/${UserId}`)
     } catch (err) {
       next(err)
     }

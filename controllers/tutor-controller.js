@@ -19,7 +19,7 @@ const tutorController = {
       const newBookings = await Booking.findAll({
         where: {
           CourseId: tutorCourses.map(course => course.id),
-          period: { [Sequelize.Op.gt]: new Date('2023-11-20') }
+          period: { [Sequelize.Op.gt]: new Date() }
         },
         include: [
           {
@@ -33,7 +33,8 @@ const tutorController = {
           }
         ],
         nest: true,
-        raw: true
+        raw: true,
+        order: [['classTime', 'ASC']]
       })
       const recentReceived = await Comment.findAll({
         where: {

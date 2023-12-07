@@ -12,7 +12,7 @@ module.exports = {
     return dayjs()
       .add(getDay, 'day')
       .subtract(lastMonth, 'month')
-      .set('hour', 18)
+      .set('hour', 10)
       .set('minute', 0)
       .set('second', 0)
       .format('YYYY-MM-DD HH:mm:ss')

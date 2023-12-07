@@ -31,7 +31,7 @@ module.exports = {
         TutorId: tutors[i].id,
         name: CourseNames[Math.floor(Math.random() * CourseNames.length)],
         startTime: getAvailableTime(i).toString(),
-        endTime: getAvailableTime(i + 14).toString(),
+        endTime: getAvailableTime(i + 7).toString(),
         spendTime: getMinuteDuration(),
         bookingDay: randomAvaiDay(),
         link: faker.internet.url(),
