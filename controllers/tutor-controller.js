@@ -4,7 +4,7 @@ const { User, Course, Booking, Comment } = require('../models')
 const tutorController = {
   getTutor: async (req, res, next) => {
     try {
-      const id = req.params.id
+      const id = req.user.id
       const tutor = await User.findByPk(id, { raw: true })
 
       if (!tutor) {
