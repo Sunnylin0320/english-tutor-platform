@@ -153,37 +153,23 @@ const studentController = {
             model: Course,
             attributes: ['name', 'link'],
             include: [{ model: User }]
+          },
+          {
+            model: Comment,
+            where: { StudentId: id }
           }
         ],
         nest: true,
         raw: true
       })
-      const learningHoursRank = await Booking.findAll({
-        attributes: [
-          'StudentId',
-          [
-            Sequelize.fn('SUM', Sequelize.col('Course.spendTime')),
-            'totalSpendTime'
-          ]
-        ],
-        include: [
-          {
-            model: Course,
-            attributes: []
-          }
-        ],
-        group: ['StudentId'],
-        order: [
-          [Sequelize.fn('SUM', Sequelize.col('Course.spendTime')), 'DESC']
-        ]
+      lessonHistory.forEach(booking => {
+        booking.hasCommented = booking.Comment.length > 0
       })
-      console.log(student)
-      console.log(learningHoursRank)
+
       res.render('students/profile', {
         student,
         newBookings,
-        lessonHistory,
-        learningHoursRank
+        lessonHistory
       })
     } catch (err) {
       next(err)
@@ -276,22 +262,39 @@ const studentController = {
     try {
       const UserId = req.user.id
       const BookingId = req.body.bookingId
-      const booking = await Booking.findByPk(BookingId, {
-        include: [
-          {
-            model: Course,
-            include: [{ model: User }]
-          }
-        ]
+      const existingComment = await Comment.findOne({
+        where: {
+          BookingId,
+          StudentId: req.user.id
+        }
       })
-      const TutorId = booking.Course.User.id
-      await Comment.create({
-        content: req.body.content,
-        score: req.body.score,
-        StudentId: req.user.id,
-        BookingId,
-        TutorId
-      })
+      if (existingComment) {
+        req.flash('error_messages', '您已經發表過評論!')
+        res.redirect(`/students/${UserId}`)
+      } else {
+        const booking = await Booking.findByPk(BookingId, {
+          include: [
+            {
+              model: Course,
+              include: [{ model: User }]
+            }
+          ]
+        })
+
+        if (!booking) {
+          req.flash('error_messages', '預定不存在!')
+          res.redirect(`/students/${UserId}`)
+          return
+        }
+        const TutorId = booking.Course.User.id
+        await Comment.create({
+          content: req.body.content,
+          score: req.body.score,
+          StudentId: req.user.id,
+          BookingId,
+          TutorId
+        })
+      }
 
       req.flash('success_messages', '已成功發表評論!')
       res.redirect(`/students/${UserId}`)
