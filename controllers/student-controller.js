@@ -152,18 +152,25 @@ const studentController = {
           {
             model: Course,
             attributes: ['name', 'link'],
-            include: [{ model: User }]
+            include: [
+              {
+                model: User
+              }
+            ]
           },
           {
             model: Comment,
-            where: { StudentId: id }
+            required: false,
+            where: { BookingId: Sequelize.col('BookingId') }
           }
         ],
         nest: true,
         raw: true
       })
+      console.log(lessonHistory)
+
       lessonHistory.forEach(booking => {
-        booking.hasCommented = booking.Comment.length > 0
+        booking.hasCommented = booking.Comment.content !== null
       })
 
       res.render('students/profile', {
